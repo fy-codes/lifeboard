@@ -3,8 +3,10 @@ const taskInput = document.querySelector("#task-input");
 const taskList = document.querySelector("#task-list");
 const taskCount = document.querySelector("#task-count");
 const completedCount = document.querySelector("#completed-count");
+const filterButtons = document.querySelectorAll(".filter-btn");
 
 let tasks = [];
+let currentFilter = "all";
 
 function createTaskElement(task){
 
@@ -33,6 +35,31 @@ function createTaskElement(task){
 
         taskText.classList.add("completed");
     }
+}
+
+function renderTasks(){
+
+    taskList.innerHTML = "";
+
+    let filteredTasks = tasks;
+
+    if(currentFilter === "completed"){
+
+        filteredTasks = tasks.filter(function(task){
+            return task.completed === true;
+        });
+    }
+
+    if(currentFilter === "pending"){
+
+        filteredTasks = tasks.filter(function(task){
+            return task.completed === false;
+        });
+    }
+
+    filteredTasks.forEach(function(task){
+        createTaskElement(task);
+    })
 }
 
 function updateTaskCount(){
@@ -67,7 +94,7 @@ taskForm.addEventListener("submit", function(event) {
 
     localStorage.setItem("tasks", JSON.stringify(tasks));
 
-    createTaskElement(task);
+    renderTasks();
 
     updateTaskCount();
 
@@ -83,8 +110,6 @@ taskList.addEventListener("click", function(event){
         const taskId = Number(li.getAttribute("data-id"));
         const taskText = li.querySelector(".task-text");
 
-        taskText.classList.toggle("completed");
-
         tasks = tasks.map(function(task){
             
             if(task.id == taskId){
@@ -98,6 +123,7 @@ taskList.addEventListener("click", function(event){
         });
 
         localStorage.setItem("tasks", JSON.stringify(tasks));
+        renderTasks();
 
         updateCompletedCount();
     }
@@ -119,6 +145,23 @@ taskList.addEventListener("click", function(event){
         updateTaskCount();
         updateCompletedCount();
     }
+});
+
+filterButtons.forEach(function(button){
+
+    button.addEventListener("click", function(){
+
+        filterButtons.forEach(function(btn){
+            btn.classList.remove("filter-active");
+        });
+
+        button.classList.add("filter-active");
+
+        currentFilter = button.getAttribute("data-filter");
+
+        renderTasks();
+    });
+
 });
 
 document.addEventListener("DOMContentLoaded", function(){
