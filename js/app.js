@@ -7,6 +7,7 @@ let tasks = [];
 function createTaskElement(task){
 
     const li = document.createElement("li");
+    li.setAttribute("data-id", task.id);
     li.className = "list-group-item d-flex justify-content-between align-items-center";
     li.innerHTML = `
         <span>${task.text}</span>
@@ -48,7 +49,18 @@ taskForm.addEventListener("submit", function(event) {
 taskList.addEventListener("click", function(event){
     
     if(event.target.classList.contains("delete-btn")){
-        event.target.parentElement.remove();
+
+        const li = event.target.parentElement;
+
+        const taskId = Number(li.getAttribute("data-id"));
+
+        tasks = tasks.filter(function(task){
+            return task.id !== taskId;
+        });
+
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+
+        li.remove();
     }
 });
 
