@@ -2,6 +2,7 @@ const taskForm = document.querySelector("#task-form");
 const taskInput = document.querySelector("#task-input");
 const taskList = document.querySelector("#task-list");
 const taskCount = document.querySelector("#task-count");
+const completedCount = document.querySelector("#completed-count");
 
 let tasks = [];
 
@@ -36,6 +37,14 @@ function createTaskElement(task){
 
 function updateTaskCount(){
     taskCount.textContent = tasks.length;
+}
+
+function updateCompletedCount(){
+    const completedTasks = tasks.filter(function(task){
+        return task.completed === true;
+    });
+
+    completedCount.textContent = completedTasks.length;
 }
 
 taskForm.addEventListener("submit", function(event) {
@@ -89,6 +98,8 @@ taskList.addEventListener("click", function(event){
         });
 
         localStorage.setItem("tasks", JSON.stringify(tasks));
+
+        updateCompletedCount();
     }
     
     if(event.target.classList.contains("delete-btn")){
@@ -106,6 +117,7 @@ taskList.addEventListener("click", function(event){
         li.remove();
 
         updateTaskCount();
+        updateCompletedCount();
     }
 });
 
@@ -122,5 +134,5 @@ document.addEventListener("DOMContentLoaded", function(){
     });
 
     updateTaskCount();
-
+    updateCompletedCount();
 });
