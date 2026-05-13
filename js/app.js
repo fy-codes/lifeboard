@@ -1,6 +1,7 @@
 const taskForm = document.querySelector("#task-form");
 const taskInput = document.querySelector("#task-input");
 const taskList = document.querySelector("#task-list");
+const taskCount = document.querySelector("#task-count");
 
 let tasks = [];
 
@@ -18,6 +19,10 @@ function createTaskElement(task){
     `;
 
     taskList.appendChild(li);
+}
+
+function updateTaskCount(){
+    taskCount.textContent = tasks.length;
 }
 
 taskForm.addEventListener("submit", function(event) {
@@ -42,6 +47,8 @@ taskForm.addEventListener("submit", function(event) {
 
     createTaskElement(task);
 
+    updateTaskCount();
+
     taskInput.value = "";
     
 });
@@ -61,6 +68,8 @@ taskList.addEventListener("click", function(event){
         localStorage.setItem("tasks", JSON.stringify(tasks));
 
         li.remove();
+
+        updateTaskCount();
     }
 });
 
@@ -75,5 +84,7 @@ document.addEventListener("DOMContentLoaded", function(){
     tasks.forEach(function(task){
         createTaskElement(task);
     });
+
+    updateTaskCount();
 
 });
