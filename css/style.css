@@ -12,3 +12,8 @@ body{
 .card:hover{
     transform: translateY(-5px);
 }
+
+.task-text.completed{
+    text-decoration: line-through;
+    opacity: 0.7;
+}

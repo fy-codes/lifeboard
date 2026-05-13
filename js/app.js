@@ -11,14 +11,27 @@ function createTaskElement(task){
     li.setAttribute("data-id", task.id);
     li.className = "list-group-item d-flex justify-content-between align-items-center";
     li.innerHTML = `
-        <span>${task.text}</span>
+        <span class = "task-text">${task.text}</span>
 
-        <button class = "btn btn-danger btn-sm delete-btn">
-            Delete
-        </button>
+        <div class = "d-flex gap-2">
+
+            <button class = "btn btn-success btn-sm complete-btn">
+                Complete
+            </button>
+
+            <button class = "btn btn-danger btn-sm delete-btn">
+                Delete
+            </button>
+        </div>
     `;
 
     taskList.appendChild(li);
+
+    if(task.completed){
+        const taskText = li.querySelector(".task-text");
+
+        taskText.classList.add("completed");
+    }
 }
 
 function updateTaskCount(){
@@ -54,10 +67,33 @@ taskForm.addEventListener("submit", function(event) {
 });
 
 taskList.addEventListener("click", function(event){
+
+    if(event.target.classList.contains("complete-btn")){
+        
+        const li = event.target.closest("li");
+        const taskId = Number(li.getAttribute("data-id"));
+        const taskText = li.querySelector(".task-text");
+
+        taskText.classList.toggle("completed");
+
+        tasks = tasks.map(function(task){
+            
+            if(task.id == taskId){
+                return{
+                    ...task,
+                    completed: !task.completed
+                };
+            }
+
+            return task;
+        });
+
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
     
     if(event.target.classList.contains("delete-btn")){
 
-        const li = event.target.parentElement;
+        const li = event.target.closest("li");
 
         const taskId = Number(li.getAttribute("data-id"));
 
