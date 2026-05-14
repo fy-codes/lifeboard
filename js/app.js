@@ -5,11 +5,14 @@ const taskCount = document.querySelector("#task-count");
 const completedCount = document.querySelector("#completed-count");
 const filterButtons = document.querySelectorAll(".filter-btn");
 const searchInput = document.querySelector("#search-input");
+const submitButton = document.querySelector("#task-form button");
 
 let tasks = [];
 let currentFilter = "all";
 let searchTerm = "";
 let editingTaskId = null;
+
+submitButton.textContent = "Add Task";
 
 function createTaskElement(task){
 
@@ -119,6 +122,8 @@ taskForm.addEventListener("submit", function(event) {
 
         editingTaskId = null;
 
+        submitButton.textContent = "Add Task";
+
         return;
     }
 
@@ -155,6 +160,8 @@ taskList.addEventListener("click", function(event){
             taskInput.value = task.text;
 
             editingTaskId = taskId;
+
+            submitButton.textContent = "Update Task";
 
     }
 
