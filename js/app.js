@@ -4,9 +4,12 @@ const taskList = document.querySelector("#task-list");
 const taskCount = document.querySelector("#task-count");
 const completedCount = document.querySelector("#completed-count");
 const filterButtons = document.querySelectorAll(".filter-btn");
+const searchInput = document.querySelector("#search-input");
 
 let tasks = [];
 let currentFilter = "all";
+let searchTerm = "";
+let editingTaskId = null;
 
 function createTaskElement(task){
 
@@ -17,6 +20,10 @@ function createTaskElement(task){
         <span class = "task-text">${task.text}</span>
 
         <div class = "d-flex gap-2">
+
+            <button class = "btn btn-primary btn-sm edit-btn">
+                Edit
+            </button>
 
             <button class = "btn btn-success btn-sm complete-btn">
                 Complete
@@ -52,8 +59,15 @@ function renderTasks(){
 
     if(currentFilter === "pending"){
 
-        filteredTasks = tasks.filter(function(task){
+        filteredTasks = filteredTasks.filter(function(task){
             return task.completed === false;
+        });
+    }
+
+    if(searchTerm !== ""){
+
+        filteredTasks = filteredTasks.filter(function(task){
+            return task.text.toLowerCase().includes(searchTerm);
         });
     }
 
@@ -84,6 +98,30 @@ taskForm.addEventListener("submit", function(event) {
         return;
     }
 
+    if(editingTaskId !== null){
+        tasks = tasks.map(function(task){
+            
+            if(task.id === editingTaskId){
+                return{
+                    ...task,
+                    text: taskText
+                };
+            }
+
+            return task;
+        });
+
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+
+        renderTasks();
+
+        taskInput.value = "";
+
+        editingTaskId = null;
+
+        return;
+    }
+
     const task = {
         id: Date.now(),
         text: taskText,
@@ -103,6 +141,23 @@ taskForm.addEventListener("submit", function(event) {
 });
 
 taskList.addEventListener("click", function(event){
+
+    if(event.target.classList.contains("edit-btn")){
+
+            const li = event.target.closest("li");
+
+            const taskId = Number(li.getAttribute("data-id"));
+
+            const task = tasks.find(function(task){
+                return task.id === taskId;
+            });
+
+            taskInput.value = task.text;
+
+            editingTaskId = taskId;
+
+    }
+
 
     if(event.target.classList.contains("complete-btn")){
         
@@ -161,6 +216,14 @@ filterButtons.forEach(function(button){
 
         renderTasks();
     });
+
+});
+
+searchInput.addEventListener("input", function(){
+    
+    searchTerm = searchInput.value.toLowerCase();
+
+    renderTasks();
 
 });
 
