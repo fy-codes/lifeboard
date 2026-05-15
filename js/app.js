@@ -6,6 +6,7 @@ const completedCount = document.querySelector("#completed-count");
 const filterButtons = document.querySelectorAll(".filter-btn");
 const searchInput = document.querySelector("#search-input");
 const submitButton = document.querySelector("#task-form button");
+const taskPriorityInput = document.querySelector("#task-priority");
 
 let tasks = [];
 let currentFilter = "all";
@@ -14,13 +15,38 @@ let editingTaskId = null;
 
 submitButton.textContent = "Add Task";
 
+function getPriorityBadgeClass(priority){
+
+    if(priority === "HIGH"){
+        return "bg-danger";
+    }
+
+    if(priority === "MEDIUM"){
+        return "bg-warning text-dark";
+    }
+
+    return "bg-secondary";
+
+}
+
 function createTaskElement(task){
 
     const li = document.createElement("li");
+
     li.setAttribute("data-id", task.id);
+
     li.className = "list-group-item d-flex justify-content-between align-items-center";
+
     li.innerHTML = `
-        <span class = "task-text">${task.text}</span>
+        <div class = "task-text align-items-center gap-3">
+
+            <span class = "task-text"> ${task.text}</span>
+
+            <span class = "badge ${getPriorityBadgeClass(task.priority)}">
+                ${task.priority}
+            </span>
+
+        </div>
 
         <div class = "d-flex gap-2">
 
@@ -130,7 +156,8 @@ taskForm.addEventListener("submit", function(event) {
     const task = {
         id: Date.now(),
         text: taskText,
-        completed: false
+        completed: false,
+        priority: taskPriorityInput.value
     };
 
     tasks.push(task);
@@ -239,7 +266,15 @@ document.addEventListener("DOMContentLoaded", function(){
     const storedTasks = JSON.parse(localStorage.getItem("tasks"));
 
     if(storedTasks !== null){
-        tasks = storedTasks;
+       
+        tasks = storedTasks.map(function(task){
+
+            return{
+                ...task,
+                priority: task.priority || "LOW"
+            };
+        });
+
     }
 
     tasks.forEach(function(task){
@@ -249,3 +284,4 @@ document.addEventListener("DOMContentLoaded", function(){
     updateTaskCount();
     updateCompletedCount();
 });
+
