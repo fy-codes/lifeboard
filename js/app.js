@@ -7,11 +7,13 @@ const filterButtons = document.querySelectorAll(".filter-btn");
 const searchInput = document.querySelector("#search-input");
 const submitButton = document.querySelector("#task-form button");
 const taskPriorityInput = document.querySelector("#task-priority");
+const sortSelect = document.querySelector("#sort-select");
 
 let tasks = [];
 let currentFilter = "all";
 let searchTerm = "";
 let editingTaskId = null;
+let currentSort = "priority";
 
 submitButton.textContent = "Add Task";
 
@@ -26,6 +28,20 @@ function getPriorityBadgeClass(priority){
     }
 
     return "bg-secondary";
+
+}
+
+function getPriorityValue(priority){
+
+    if(priority === "HIGH"){
+        return 1;
+    }
+
+    if(priority === "MEDIUM"){
+        return 2;
+    }
+
+    return 3;
 
 }
 
@@ -121,6 +137,21 @@ function renderTasks(){
             return task.text.toLowerCase().includes(searchTerm);
         });
     }
+
+    filteredTasks = [...filteredTasks].sort(function(a, b){
+
+        if(currentSort === "priority"){
+            return getPriorityValue(a.priority) - getPriorityValue(b.priority);
+        }
+
+        if(currentSort === "newest"){
+            return b.id - a.id;
+        }
+
+        if(currentSort === "oldest"){
+            return a.id - b.id;
+        }
+    });
 
     filteredTasks.forEach(function(task){
         createTaskElement(task);
@@ -278,6 +309,14 @@ filterButtons.forEach(function(button){
 searchInput.addEventListener("input", function(){
     
     searchTerm = searchInput.value.toLowerCase();
+
+    renderTasks();
+
+});
+
+sortSelect.addEventListener("change", function(){
+
+    currentSort = sortSelect.value;
 
     renderTasks();
 
