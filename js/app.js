@@ -93,6 +93,28 @@ function renderTasks(){
         });
     }
 
+    if(currentFilter === "high"){
+
+        filteredTasks = filteredTasks.filter(function(task){
+            return task.priority === "HIGH";
+        });
+    }
+
+    if(currentFilter === "medium"){
+
+        filteredTasks = filteredTasks.filter(function(task){
+            return task.priority === "MEDIUM";
+        });
+    }
+
+    if(currentFilter === "low"){
+
+        filteredTasks = filteredTasks.filter(function(task){
+            return task.priority === "LOW";
+        });
+    }
+
+
     if(searchTerm !== ""){
 
         filteredTasks = filteredTasks.filter(function(task){
