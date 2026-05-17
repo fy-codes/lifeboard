@@ -19,5 +19,12 @@ body{
 }
 
 .filter-active{
-    transform: scale(1.05);
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+}
+
+.completed{
+    text-decoration: line-through;
+    opacity: 0.6;
 }

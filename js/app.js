@@ -409,5 +409,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
     updateTaskCount();
     updateCompletedCount();
+
+    document.querySelector('[data-filter="all"]').classList.add("filter-active");
 });
 
