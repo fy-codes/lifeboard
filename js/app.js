@@ -46,9 +46,50 @@ function getPriorityValue(priority){
 
 }
 
+function getDeadlineStatus(deadline){
+
+    if(!deadline){
+        return null;
+    }
+
+    const today = new Date();
+    const deadlineDate = new Date(deadline);
+
+    today.setHours(0, 0, 0, 0);
+    deadlineDate.setHours(0, 0, 0, 0);
+
+    if(deadlineDate < today){
+        return "overdue";
+    }
+
+    if(deadlineDate.getTime() === today.getTime()){
+        return "today";
+    }
+
+    return "upcoming";
+
+}
+
+function getDeadlineBadgeClass(status){
+
+    if(status === "overdue"){
+        return "bg-danger";
+    }
+
+    if(status === "today"){
+        return "bg-warning text-dark";
+    }
+
+    return "bg-info text-dark";
+
+}
+
+
 function createTaskElement(task){
 
     const li = document.createElement("li");
+
+    const deadlineStatus = getDeadlineStatus(task.deadline);
 
     li.setAttribute("data-id", task.id);
 
@@ -64,8 +105,8 @@ function createTaskElement(task){
             </span>
 
             ${task.deadline ? `
-                <span class = "badge bg-info text-dark">
-                    Due: ${task.deadline}
+                <span class = "badge ${getDeadlineBadgeClass(deadlineStatus)}">
+                    ${deadlineStatus === "overdue" ? "Overdue": deadlineStatus === "today" ? "Due Today" : "Upcoming"}: ${task.deadline}
                 </span>
                 `: ""}
         
