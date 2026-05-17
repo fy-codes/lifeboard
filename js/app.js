@@ -8,6 +8,7 @@ const searchInput = document.querySelector("#search-input");
 const submitButton = document.querySelector("#task-form button");
 const taskPriorityInput = document.querySelector("#task-priority");
 const sortSelect = document.querySelector("#sort-select");
+const taskDeadlineInput = document.querySelector("#task-deadline");
 
 let tasks = [];
 let currentFilter = "all";
@@ -61,6 +62,13 @@ function createTaskElement(task){
             <span class = "badge ${getPriorityBadgeClass(task.priority)}">
                 ${task.priority}
             </span>
+
+            ${task.deadline ? `
+                <span class = "badge bg-info text-dark">
+                    Due: ${task.deadline}
+                </span>
+                `: ""}
+        
 
         </div>
 
@@ -186,7 +194,9 @@ taskForm.addEventListener("submit", function(event) {
             if(task.id === editingTaskId){
                 return{
                     ...task,
-                    text: taskText
+                    text: taskText,
+                    priority : taskPriorityInput.value,
+                    deadline: taskDeadlineInput.value
                 };
             }
 
@@ -198,6 +208,8 @@ taskForm.addEventListener("submit", function(event) {
         renderTasks();
 
         taskInput.value = "";
+        taskPriorityInput.value = "MEDIUM";
+        taskDeadlineInput.value = "";
 
         editingTaskId = null;
 
@@ -210,7 +222,8 @@ taskForm.addEventListener("submit", function(event) {
         id: Date.now(),
         text: taskText,
         completed: false,
-        priority: taskPriorityInput.value
+        priority: taskPriorityInput.value,
+        deadline: taskDeadlineInput.value
     };
 
     tasks.push(task);
@@ -222,6 +235,7 @@ taskForm.addEventListener("submit", function(event) {
     updateTaskCount();
 
     taskInput.value = "";
+    taskDeadlineInput.value = "";
     
 });
 
@@ -238,6 +252,8 @@ taskList.addEventListener("click", function(event){
             });
 
             taskInput.value = task.text;
+            taskPriorityInput.value = task.priority;
+            taskDeadlineInput.value = task.deadline;
 
             editingTaskId = taskId;
 
