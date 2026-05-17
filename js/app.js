@@ -200,6 +200,14 @@ function renderTasks(){
         if(currentSort === "oldest"){
             return a.id - b.id;
         }
+
+        if(currentSort === "deadline-nearest"){
+            return new Date(a.deadline || "9999-12-31") - new Date(b.deadline || "9999-12-31");
+        }
+
+        if(currentSort === "deadline-farthest"){
+             return new Date(b.deadline || "0000-01-01") - new Date(a.deadline || "0000-01-01");
+        }
     });
 
     filteredTasks.forEach(function(task){
