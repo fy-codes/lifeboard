@@ -9,6 +9,8 @@ const submitButton = document.querySelector("#task-form button");
 const taskPriorityInput = document.querySelector("#task-priority");
 const sortSelect = document.querySelector("#sort-select");
 const taskDeadlineInput = document.querySelector("#task-deadline");
+const overdueCount = document.querySelector("#overdue-count");
+const todayCount = document.querySelector("#today-count");
 
 let tasks = [];
 let currentFilter = "all";
@@ -217,6 +219,7 @@ function renderTasks(){
 
 function updateTaskCount(){
     taskCount.textContent = tasks.length;
+
 }
 
 function updateCompletedCount(){
@@ -225,6 +228,21 @@ function updateCompletedCount(){
     });
 
     completedCount.textContent = completedTasks.length;
+
+}
+
+function updateDeadlineStats(){
+
+    const overdueTasks = tasks.filter(function(task){
+        return getDeadlineStatus(task.deadline) === "overdue";
+    });
+
+    const todayTasks = tasks.filter(function(task){
+        return getDeadlineStatus(task.deadline) === "today";
+    });
+
+    overdueCount.textContent = overdueTasks.length;
+    todayCount.textContent = todayTasks.length;
 }
 
 taskForm.addEventListener("submit", function(event) {
@@ -255,6 +273,7 @@ taskForm.addEventListener("submit", function(event) {
         localStorage.setItem("tasks", JSON.stringify(tasks));
 
         renderTasks();
+        updateDeadlineStats();
 
         taskInput.value = "";
         taskPriorityInput.value = "MEDIUM";
@@ -282,6 +301,7 @@ taskForm.addEventListener("submit", function(event) {
     renderTasks();
 
     updateTaskCount();
+    updateDeadlineStats();
 
     taskInput.value = "";
     taskDeadlineInput.value = "";
@@ -333,6 +353,7 @@ taskList.addEventListener("click", function(event){
         renderTasks();
 
         updateCompletedCount();
+        updateDeadlineStats();
     }
     
     if(event.target.classList.contains("delete-btn")){
